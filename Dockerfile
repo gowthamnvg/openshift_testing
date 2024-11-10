@@ -17,9 +17,12 @@ RUN npm run build
 # Step 2: Serve the React app with Nginx
 FROM nginx:alpine
 
+# Switch to root user to avoid permission issues
+USER root
+
 # Ensure proper permissions for Nginx directories
-RUN mkdir -p /var/cache/nginx/client_temp && \
-    chown -R nginx:nginx /var/cache/nginx /usr/share/nginx/html
+RUN mkdir -p /var/cache/nginx /var/cache/nginx/proxy_temp /var/cache/nginx/client_temp && \
+    chown -R root:root /var/cache/nginx /var/cache/nginx/* /usr/share/nginx/html
 
 # Copy the build output to the Nginx html directory
 COPY --from=build /app/build /usr/share/nginx/html
